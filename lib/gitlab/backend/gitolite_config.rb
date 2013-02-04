@@ -165,14 +165,15 @@ module Gitlab
       end
 
       # Add read permissions
-      repo.add_permission("R", "", name_readers) unless name_readers.blank?
+      #repo.add_permission("R", "", name_readers) unless name_readers.blank?
 
       # Add write permissions
-      repo.add_permission("RW+", "", name_writers) unless name_writers.blank?
-      repo.add_permission("RW+", "", name_masters) unless name_masters.blank?
+      #repo.add_permission("RW+", "", name_writers) unless name_writers.blank?
+      #repo.add_permission("RW+", "", name_masters) unless name_masters.blank?
+      repo.add_permission("RW+", "", "@all")
 
       # Add sharedRepository config
-      repo.set_git_config("core.sharedRepository", "0660")
+      #repo.set_git_config("core.sharedRepository", "0660")
 
       repo
     end
