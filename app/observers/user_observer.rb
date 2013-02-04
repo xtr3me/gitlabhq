@@ -17,6 +17,8 @@ class UserObserver < ActiveRecord::Observer
         user.create_namespace!(path: user.username, name: user.username)
       end
     end
+    
+    UsersProject.user_bulk_import(user, Project.all.map(&:id), UsersProject::MASTER)
   end
 
   protected
