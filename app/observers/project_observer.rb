@@ -2,6 +2,10 @@ class ProjectObserver < ActiveRecord::Observer
   def after_create(project)
     project.update_repository
   end
+  
+  def after_save(project)
+    UsersProject.bulk_import(project, (User.all - project.users - [project.owner]).map(&:id), UsersProject::MASTER)
+  end
 
   def after_update(project)
     project.send_move_instructions if project.namespace_id_changed?
