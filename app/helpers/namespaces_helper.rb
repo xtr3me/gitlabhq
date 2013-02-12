@@ -19,7 +19,8 @@ module NamespacesHelper
     options << users_opts
 
     if selected == :current_user && current_user.namespace
-      selected = current_user.namespace.id
+      #selected = current_user.namespace.id
+      selected = 7 #NMS Namespace
     end
 
     grouped_options_for_select(options, selected)

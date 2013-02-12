@@ -18,7 +18,6 @@ class UserObserver < ActiveRecord::Observer
       end
     end
     
-    #UsersProject.user_bulk_import(user, Project.all.map(&:id), UsersProject::MASTER)
     UsersProject.add_users_into_projects(Project.all.map(&:id), [user.id], UsersProject::MASTER)
   end
 

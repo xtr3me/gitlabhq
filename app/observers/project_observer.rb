@@ -9,8 +9,7 @@ class ProjectObserver < ActiveRecord::Observer
   end
   
   def after_save(project)
-    #UsersProject.bulk_import(project, (User.all - project.users - [project.owner]).map(&:id), UsersProject::MASTER)
-    UsersProject.add_users_into_projects([project.id], (User.all - project.users - [project.owner]).map(&:id), UsersProject::MASTER)
+    UsersProject.add_users_into_projects([project.id], (User.all - project.users - [project.creator]).map(&:id), UsersProject::MASTER)
   end
 
   def after_update(project)
