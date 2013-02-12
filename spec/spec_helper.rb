@@ -24,7 +24,6 @@ RSpec.configure do |config|
   config.mock_with :rspec
 
   config.include LoginHelpers, type: :request
-  config.include GitoliteStub
   config.include FactoryGirl::Syntax::Methods
   config.include Devise::TestHelpers, type: :controller
 
@@ -34,11 +33,9 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = false
 
   config.before do
-    stub_gitolite!
-
     # Use tmp dir for FS manipulations
     temp_repos_path = Rails.root.join('tmp', 'test-git-base-path')
-    Gitlab.config.gitolite.stub(repos_path: temp_repos_path)
+    Gitlab.config.gitlab_shell.stub(repos_path: temp_repos_path)
     FileUtils.rm_rf temp_repos_path
     FileUtils.mkdir_p temp_repos_path
   end

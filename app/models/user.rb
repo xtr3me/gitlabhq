@@ -231,7 +231,9 @@ class User < ActiveRecord::Base
   end
 
   def require_ssh_key?
-    keys.count == 0
+    #keys.count == 0
+    #Kerberos doesn't use SSH keys
+    return false
   end
 
   def can_create_project?

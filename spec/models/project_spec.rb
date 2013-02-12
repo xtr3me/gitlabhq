@@ -66,19 +66,12 @@ describe Project do
       project.should_not be_valid
       project.errors[:base].first.should match(/Your own projects limit is 1/)
     end
-
-    it "should not allow 'gitolite-admin' as repo name" do
-      should allow_value("blah").for(:path)
-      should_not allow_value("gitolite-admin").for(:path)
-    end
   end
 
   describe "Respond to" do
     it { should respond_to(:url_to_repo) }
     it { should respond_to(:repo_exists?) }
     it { should respond_to(:satellite) }
-    it { should respond_to(:update_repository) }
-    it { should respond_to(:destroy_repository) }
     it { should respond_to(:observe_push) }
     it { should respond_to(:update_merge_requests) }
     it { should respond_to(:execute_hooks) }
@@ -93,7 +86,7 @@ describe Project do
 
   it "should return valid url to repo" do
     project = Project.new(path: "somewhere")
-    project.url_to_repo.should == Gitlab.config.gitolite.ssh_path_prefix + "somewhere.git"
+    project.url_to_repo.should == Gitlab.config.gitlab_shell.ssh_path_prefix + "somewhere.git"
   end
 
   it "returns the full web URL for this repo" do

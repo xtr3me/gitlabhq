@@ -1,4 +1,8 @@
+v 5.0.0
+  - Replaced gitolite with gitlab-shell
+
 v 4.2.0
+  - Teams
   - User show page. Via /u/username
   - Show help contents on pages for better navigation
 
