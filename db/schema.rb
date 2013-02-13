@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130131070232) do
+ActiveRecord::Schema.define(:version => 20130213081301) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -268,6 +268,7 @@ ActiveRecord::Schema.define(:version => 20130131070232) do
     t.string   "username"
     t.boolean  "can_create_group",       :default => true,  :null => false
     t.boolean  "can_create_team",        :default => true,  :null => false
+    t.string   "ssh_username"
   end
 
   add_index "users", ["admin"], :name => "index_users_on_admin"

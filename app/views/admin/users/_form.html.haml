@@ -19,6 +19,11 @@
           = f.text_field :username, required: true
           %span.help-inline * required
       .clearfix
+        = f.label :ssh_username
+        .input
+          = f.text_field :ssh_username, required: true
+          %span.help-inline * required
+      .clearfix
         = f.label :email
         .input
           = f.text_field :email, required: true

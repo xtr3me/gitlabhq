@@ -10,10 +10,14 @@ module Gitlab
         project = Project.find_with_namespace(params[:project])
         git_cmd = params[:action]
 
-        if key.is_deploy_key
+	if key.nil?
+	  user = User.where(ssh_username: params[:key_id]).first
+	end
+
+        if !key.nil? && key.is_deploy_key
           project == key.project && git_cmd == 'git-upload-pack'
         else
-          user = key.user
+          user = key.user if user.nil?
           action = case git_cmd
                    when 'git-upload-pack'
                      then :download_code

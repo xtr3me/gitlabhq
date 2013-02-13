@@ -31,6 +31,7 @@
 #  extern_uid             :string(255)
 #  provider               :string(255)
 #  username               :string(255)
+#  ssh_username		  :string(255)
 #  can_create_group       :boolean          default(TRUE), not null
 #  can_create_team        :boolean          default(TRUE), not null
 #
@@ -39,7 +40,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :token_authenticatable, :lockable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :registerable
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username, :ssh_username,
                   :skype, :linkedin, :twitter, :dark_scheme, :theme_id, :force_random_password,
                   :extern_uid, :provider, as: [:default, :admin]
   attr_accessible :projects_limit, :can_create_team, :can_create_group, as: :admin
@@ -76,7 +77,10 @@ class User < ActiveRecord::Base
   validates :username, presence: true, uniqueness: true,
             format: { with: Gitlab::Regex.username_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
-
+  
+  validates :ssh_username, presence: true, uniqueness: true,
+            format: { with: Gitlab::Regex.username_regex,
+                      message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
 
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
 

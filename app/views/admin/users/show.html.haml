@@ -30,6 +30,12 @@
   %tr
     %td
       %b
+        SSH Username:
+    %td
+      = @admin_user.ssh_username
+  %tr
+    %td
+      %b
         Admin:
         %td= check_box_tag "admin", 1, @admin_user.admin, disabled: :disabled
   %tr
