@@ -6,7 +6,7 @@ module Gitlab
       # Check if ssh key has access to project code
       #
       get "/allowed" do
-        key = Key.find(params[:key_id])
+        key = Key.find(params[:key_id]) rescue nil
         project = Project.find_with_namespace(params[:project])
         git_cmd = params[:action]
 
@@ -38,8 +38,13 @@ module Gitlab
       # Discover user by ssh key
       #
       get "/discover" do
-        key = Key.find(params[:key_id])
-        present key.user, with: Entities::User
+        key = Key.find(params[:key_id]) rescue nil
+	if key.nil?
+	  user = User.where(ssh_username: params[:key_id]).first
+	  present user, with: Entities::User
+	else
+	  present key.user, with: Entities::User
+	end
       end
 
       get "/check" do
