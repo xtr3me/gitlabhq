@@ -91,7 +91,7 @@ class Project < ActiveRecord::Base
   scope :sorted_by_activity, ->() { order("(SELECT max(events.created_at) FROM events WHERE events.project_id = projects.id) DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
-  scope :public, where(public: true)
+  scope :public_only, -> { where(public: true) }
 
   class << self
     def abandoned
@@ -103,7 +103,7 @@ class Project < ActiveRecord::Base
     end
 
     def with_push
-      includes(:events).where('events.action = ?', Event::Pushed)
+      includes(:events).where('events.action = ?', Event::PUSHED)
     end
 
     def active
@@ -336,7 +336,7 @@ class Project < ActiveRecord::Base
   def observe_push(data)
     Event.create(
       project: self,
-      action: Event::Pushed,
+      action: Event::PUSHED,
       data: data,
       author_id: data[:user_id]
     )
