@@ -142,7 +142,7 @@ class User < ActiveRecord::Base
     end
 
     def search query
-      where("name LIKE :query or email LIKE :query", query: "%#{query}%")
+      where("name LIKE :query OR email LIKE :query OR username LIKE :query", query: "%#{query}%")
     end
   end
 
@@ -318,5 +318,9 @@ class User < ActiveRecord::Base
 
                             UserTeam.where(id: ids)
                           end
+  end
+
+  def owned_teams
+    UserTeam.where(owner_id: self.id)
   end
 end
