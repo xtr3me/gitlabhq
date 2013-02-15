@@ -5,6 +5,10 @@
     %li
       %strong Email
       %span.pull-right= mail_to user.email
+    - unless user.ssh_username.blank?
+      %li
+        %strong SSH Username
+        %span.pull-right= user.ssh_username
     - unless user.skype.blank?
       %li
         %strong Skype

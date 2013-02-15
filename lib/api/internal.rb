@@ -11,7 +11,7 @@ module Gitlab
         git_cmd = params[:action]
 
 	if key.nil?
-	  user = User.where(ssh_username: params[:key_id]).first
+	  user = User.where(ssh_username: params[:key_id].gsub(/user\-/, "")).first
 	end
 
         if !key.nil? && key.is_deploy_key
