@@ -21,7 +21,7 @@ GET /projects
       "blocked": false,
       "created_at": "2012-05-23T08:00:58Z"
     },
-    "private": true,
+    "public": true,
     "path": "rails",
     "path_with_namespace": "rails/rails",
     "issues_enabled": false,
@@ -43,7 +43,7 @@ GET /projects
       "blocked": false,
       "created_at": "2012-05-23T08:00:58Z"
     },
-    "private": true,
+    "public": true,
     "path": "gitlab",
     "path_with_namespace": "randx/gitlab",
     "issues_enabled": true,
@@ -81,7 +81,7 @@ Parameters:
     "blocked": false,
     "created_at": "2012-05-23T08:00:58Z"
   },
-  "private": true,
+  "public": true,
   "path": "gitlab",
   "path_with_namespace": "randx/gitlab",
   "issues_enabled": true,
@@ -265,7 +265,7 @@ Will return status `201 Created` on success, or `404 Not found` on fail.
 Delete hook from project
 
 ```
-DELETE /projects/:id/hooks
+DELETE /projects/:id/hooks/:hook_id
 ```
 
 Parameters:

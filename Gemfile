@@ -70,6 +70,9 @@ gem "github-markup", "~> 0.7.4", require: 'github/markup'
 # Servers
 gem "unicorn", "~> 4.4.0"
 
+# State machine
+gem "state_machine"
+
 # Issue tags
 gem "acts-as-taggable-on", "2.3.3"
 
@@ -78,8 +81,8 @@ gem "draper", "~> 0.18.0"
 
 # Background jobs
 gem 'slim'
-gem 'sinatra', :require => nil
-gem 'sidekiq', '2.6.4'
+gem 'sinatra', require: nil
+gem 'sidekiq', '2.7.3'
 
 # HTTP requests
 gem "httparty"
@@ -131,12 +134,12 @@ end
 
 group :development, :test do
   gem 'rails-dev-tweaks'
-  gem 'spinach-rails'
-  gem "rspec-rails"
-  gem "capybara"
+  gem 'spinach-rails', '0.2.0'
+  gem "rspec-rails", '2.12.2'
+  gem "capybara", '2.0.2'
   gem "pry"
   gem "awesome_print"
-  gem "database_cleaner", ref: "f89c34300e114be99532f14c115b2799a3380ac6", git: "https://github.com/bmabey/database_cleaner.git"
+  gem "database_cleaner", ref: "9f898fc50d87a5d51760f9dcf374bf5ffda21baf", git: "https://github.com/bmabey/database_cleaner.git"
   gem "launchy"
   gem 'factory_girl_rails'
 
@@ -150,7 +153,7 @@ group :development, :test do
   gem 'rb-inotify', require: linux_only('rb-inotify')
 
   # PhantomJS driver for Capybara
-  gem 'poltergeist', git: 'https://github.com/jonleighton/poltergeist.git', ref: '5c2e092001074a8cf09f332d3714e9ba150bc8ca'
+  gem 'poltergeist', '1.1.0'
 end
 
 group :test do

@@ -240,8 +240,12 @@ class User < ActiveRecord::Base
     return false
   end
 
+  def can_change_username?
+    Gitlab.config.gitlab.username_changing_enabled
+  end
+
   def can_create_project?
-    projects_limit > personal_projects.count
+    projects_limit > owned_projects.count
   end
 
   def can_create_group?
@@ -269,7 +273,7 @@ class User < ActiveRecord::Base
   end
 
   def cared_merge_requests
-    MergeRequest.where("author_id = :id or assignee_id = :id", id: self.id)
+    MergeRequest.cared(self)
   end
 
   # Remove user from all projects and
