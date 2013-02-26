@@ -58,7 +58,7 @@ module Gitlab
     end
    
     def gitlab_shell_user_home
-      File.expand_path("~#{Gitlab.config.gitlab_shell.directory}")
+      File.expand_path("#{Gitlab.config.gitlab_shell.directory}")
     end
 
   end
