@@ -54,6 +54,7 @@ Settings.gitlab['relative_url_root'] ||= ''
 Settings.gitlab['protocol']   ||= Settings.gitlab.https ? "https" : "http"
 Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['support_email']  ||= Settings.gitlab.email_from
+Settings.gitlab['send_grant_emails']  ||= true
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
 Settings.gitlab['signup_enabled'] ||= false
