@@ -9,7 +9,7 @@ class UsersProjectObserver < ActiveRecord::Observer
       project_id: users_project.project.id,
       action: Event::JOINED,
       author_id: users_project.user.id
-    )
+    ) unless Settings.gitlab.disable_grant_events
   end
 
   def after_destroy(users_project)
@@ -17,6 +17,6 @@ class UsersProjectObserver < ActiveRecord::Observer
       project_id: users_project.project.id,
       action: Event::LEFT,
       author_id: users_project.user.id
-    )
+    ) unless Settings.gitlab.disable_grant_events
   end
 end
