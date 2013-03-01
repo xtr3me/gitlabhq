@@ -155,6 +155,7 @@ module Gitlab
       # Example Request:
       #   GET /projects/:id/hooks/:hook_id
       get ":id/hooks/:hook_id" do
+        authorize! :admin_project, user_project
         @hook = user_project.hooks.find(params[:hook_id])
         present @hook, with: Entities::Hook
       end
@@ -204,8 +205,8 @@ module Gitlab
       #   id (required) - The ID of a project
       #   hook_id (required) - The ID of hook to delete
       # Example Request:
-      #   DELETE /projects/:id/hooks
-      delete ":id/hooks" do
+      #   DELETE /projects/:id/hooks/:hook_id
+      delete ":id/hooks/:hook_id" do
         authorize! :admin_project, user_project
         @hook = user_project.hooks.find(params[:hook_id])
         @hook.destroy
@@ -291,7 +292,7 @@ module Gitlab
         authorize! :download_code, user_project
 
         page = params[:page] || 0
-        per_page = params[:per_page] || 20
+        per_page = (params[:per_page] || 20).to_i
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
 
         commits = user_project.repository.commits(ref, nil, per_page, page * per_page)

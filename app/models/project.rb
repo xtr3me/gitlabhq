@@ -11,6 +11,7 @@
 #  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
+#  issues_tracker         :string           not null
 #  wall_enabled           :boolean          default(TRUE), not null
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
@@ -22,11 +23,12 @@ require "grit"
 
 class Project < ActiveRecord::Base
   include Gitolited
+  extend Enumerize
 
   class TransferError < StandardError; end
 
-  attr_accessible :name, :path, :description, :default_branch,
-    :issues_enabled, :wall_enabled, :merge_requests_enabled,
+  attr_accessible :name, :path, :description, :default_branch, :issues_tracker,
+    :issues_enabled, :wall_enabled, :merge_requests_enabled, :issues_tracker_id,
     :wiki_enabled, :public, :import_url, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
@@ -43,7 +45,7 @@ class Project < ActiveRecord::Base
 
   has_many :events,             dependent: :destroy
   has_many :merge_requests,     dependent: :destroy
-  has_many :issues,             dependent: :destroy, order: "closed, created_at DESC"
+  has_many :issues,             dependent: :destroy, order: "state DESC, created_at DESC"
   has_many :milestones,         dependent: :destroy
   has_many :users_projects,     dependent: :destroy
   has_many :notes,              dependent: :destroy
@@ -72,6 +74,7 @@ class Project < ActiveRecord::Base
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
+  validates :issues_tracker_id, length: { within: 0..255 }
 
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
@@ -92,6 +95,8 @@ class Project < ActiveRecord::Base
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
   scope :public_only, -> { where(public: true) }
+
+  enumerize :issues_tracker, :in => (Gitlab.config.issues_tracker.keys).append(:gitlab), :default => :gitlab
 
   class << self
     def abandoned
@@ -146,7 +151,7 @@ class Project < ActiveRecord::Base
   end
 
   def saved?
-    id && valid?
+    id && persisted?
   end
 
   def import?
@@ -201,6 +206,22 @@ class Project < ActiveRecord::Base
     issues.tag_counts_on(:labels)
   end
 
+  def issue_exists?(issue_id)
+    if used_default_issues_tracker?
+      self.issues.where(id: issue_id).first.present?
+    else
+      true
+    end
+  end
+
+  def used_default_issues_tracker?
+    self.issues_tracker == Project.issues_tracker.default_value
+  end
+
+  def can_have_issues_tracker_id?
+    self.issues_enabled && !self.used_default_issues_tracker?
+  end
+
   def services
     [gitlab_ci_service].compact
   end
@@ -247,32 +268,6 @@ class Project < ActiveRecord::Base
     users_projects.find_by_user_id(user_id)
   end
 
-  def transfer(new_namespace)
-    Project.transaction do
-      old_namespace = namespace
-      self.namespace = new_namespace
-
-      old_dir = old_namespace.try(:path) || ''
-      new_dir = new_namespace.try(:path) || ''
-
-      old_repo = if old_dir.present?
-                   File.join(old_dir, self.path)
-                 else
-                   self.path
-                 end
-
-      if Project.where(path: self.path, namespace_id: new_namespace.try(:id)).present?
-        raise TransferError.new("Project with same path in target namespace already exists")
-      end
-
-      Gitlab::ProjectMover.new(self, old_dir, new_dir).execute
-
-      save!
-    end
-  rescue Gitlab::ProjectMover::ProjectMoveError => ex
-    raise Project::TransferError.new(ex.message)
-  end
-
   def name_with_namespace
     @name_with_namespace ||= begin
                                if namespace
@@ -295,51 +290,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  # This method will be called after each post receive and only if the provided
-  # user is present in GitLab.
-  #
-  # All callbacks for post receive should be placed here.
-  def trigger_post_receive(oldrev, newrev, ref, user)
-    data = post_receive_data(oldrev, newrev, ref, user)
-
-    # Create satellite
-    self.satellite.create unless self.satellite.exists?
-
-    # Create push event
-    self.observe_push(data)
-
-    if push_to_branch? ref, oldrev
-      # Close merged MR
-      self.update_merge_requests(oldrev, newrev, ref, user)
-
-      # Execute web hooks
-      self.execute_hooks(data.dup)
-
-      # Execute project services
-      self.execute_services(data.dup)
-    end
-
-    # Discover the default branch, but only if it hasn't already been set to
-    # something else
-    if repository && default_branch.nil?
-      update_attributes(default_branch: self.repository.discover_default_branch)
-    end
-  end
-
-  def push_to_branch? ref, oldrev
-    ref_parts = ref.split('/')
-
-    # Return if this is not a push to a branch (e.g. new commits)
-    !(ref_parts[1] !~ /heads/ || oldrev == "00000000000000000000000000000000")
-  end
-
-  def observe_push(data)
-    Event.create(
-      project: self,
-      action: Event::PUSHED,
-      data: data,
-      author_id: data[:user_id]
-    )
+  def transfer(new_namespace)
+    ProjectTransferService.new.transfer(self, new_namespace)
   end
 
   def execute_hooks(data)
@@ -354,68 +306,12 @@ class Project < ActiveRecord::Base
     end
   end
 
-  # Produce a hash of post-receive data
-  #
-  # data = {
-  #   before: String,
-  #   after: String,
-  #   ref: String,
-  #   user_id: String,
-  #   user_name: String,
-  #   repository: {
-  #     name: String,
-  #     url: String,
-  #     description: String,
-  #     homepage: String,
-  #   },
-  #   commits: Array,
-  #   total_commits_count: Fixnum
-  # }
-  #
-  def post_receive_data(oldrev, newrev, ref, user)
-
-    push_commits = repository.commits_between(oldrev, newrev)
-
-    # Total commits count
-    push_commits_count = push_commits.size
-
-    # Get latest 20 commits ASC
-    push_commits_limited = push_commits.last(20)
-
-    # Hash to be passed as post_receive_data
-    data = {
-      before: oldrev,
-      after: newrev,
-      ref: ref,
-      user_id: user.id,
-      user_name: user.name,
-      repository: {
-        name: name,
-        url: url_to_repo,
-        description: description,
-        homepage: web_url,
-      },
-      commits: [],
-      total_commits_count: push_commits_count
-    }
-
-    # For perfomance purposes maximum 20 latest commits
-    # will be passed as post receive hook data.
-    #
-    push_commits_limited.each do |commit|
-      data[:commits] << {
-        id: commit.id,
-        message: commit.safe_message,
-        timestamp: commit.date.xmlschema,
-        url: "#{Gitlab.config.gitlab.url}/#{path_with_namespace}/commit/#{commit.id}",
-        author: {
-          name: commit.author_name,
-          email: commit.author_email
-        }
-      }
+  def discover_default_branch
+    # Discover the default branch, but only if it hasn't already been set to
+    # something else
+    if repository && default_branch.nil?
+      update_attributes(default_branch: self.repository.discover_default_branch)
     end
-
-    data
   end
 
   def update_merge_requests(oldrev, newrev, ref, user)
@@ -424,7 +320,7 @@ class Project < ActiveRecord::Base
     c_ids = self.repository.commits_between(oldrev, newrev).map(&:id)
 
     # Update code for merge requests
-    mrs = self.merge_requests.opened.find_all_by_branch(branch_name).all
+    mrs = self.merge_requests.opened.by_branch(branch_name).all
     mrs.each { |merge_request| merge_request.reload_code; merge_request.mark_as_unchecked }
 
     # Close merge requests
@@ -444,6 +340,10 @@ class Project < ActiveRecord::Base
 
   def empty_repo?
     !repository || repository.empty?
+  end
+
+  def ensure_satellite_exists
+    self.satellite.create unless self.satellite.exists?
   end
 
   def satellite

@@ -42,6 +42,8 @@ Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
 Settings.omniauth['providers']  ||= []
 
+Settings['issues_tracker']  ||= {}
+
 #
 # GitLab
 #
@@ -57,6 +59,7 @@ Settings.gitlab['support_email']  ||= Settings.gitlab.email_from
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
 Settings.gitlab['signup_enabled'] ||= false
+Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
 
 #
 # Gravatar

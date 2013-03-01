@@ -5,6 +5,12 @@ module Gitlab
       #
       # Check if ssh key has access to project code
       #
+      # Params:
+      #   key_id - SSH Key id
+      #   project - project path with namespace
+      #   action - git action (git-upload-pack or git-receive-pack)
+      #   ref - branch name
+      #
       get "/allowed" do
         key = Key.find(params[:key_id]) rescue nil
         project = Project.find_with_namespace(params[:project])
@@ -49,7 +55,9 @@ module Gitlab
 
       get "/check" do
         {
-          api_version: '3'
+          api_version: Gitlab::API.version,
+          gitlab_version: Gitlab::VERSION,
+          gitlab_rev: Gitlab::REVISION,
         }
       end
     end

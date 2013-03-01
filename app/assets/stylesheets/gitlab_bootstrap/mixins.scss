@@ -24,6 +24,14 @@
   background-image: -o-linear-gradient($from, $to);
 }
 
+@mixin transition($transition) {
+  -webkit-transition: $transition;
+  -moz-transition: $transition;
+  -ms-transition: $transition;
+  -o-transition: $transition;
+  transition: $transition;
+}
+
 /**
  * Prefilled mixins
  * Mixins with fixed values
@@ -63,7 +71,7 @@
   color: $style_color;
   text-shadow: 0 1px 1px #FFF;
   font-family: 'Yanone', sans-serif;
-  font-size: 26px;
-  line-height: 42px;
+  font-size: 24px;
+  line-height: 36px;
   font-weight: normal;
 }

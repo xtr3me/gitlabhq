@@ -1,45 +1,52 @@
-# Welcome to GitLab [![build status](https://secure.travis-ci.org/gitlabhq/gitlabhq.png)](https://travis-ci.org/gitlabhq/gitlabhq) [![build status](https://secure.travis-ci.org/gitlabhq/grit.png)](https://travis-ci.org/gitlabhq/grit) [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/gitlabhq/gitlabhq) [![Dependency Status](https://gemnasium.com/gitlabhq/gitlabhq.png)](https://gemnasium.com/gitlabhq/gitlabhq)
+## GitLab is a self hosted Git management software.
 
-GitLab is a free project and repository management application
+Check out [gitlab.org](http://gitlab.org)
 
-[![CI](http://ci.gitlab.org/projects/1/status?ref=master)](http://ci.gitlab.org/projects/1?ref=master)
+![logo](https://raw.github.com/gitlabhq/gitlabhq/master/public/gitlab_logo.png)
 
-## Application details
+With GitLab you can:
+ * create projects and repositories
+ * manage repositories access
+ * do code review
 
-* based on Ruby on Rails
+- - -
+
+### Code status:
+
+* master: travis-ci.org
+  [![build status](https://secure.travis-ci.org/gitlabhq/gitlabhq.png)](https://travis-ci.org/gitlabhq/gitlabhq)
+
+* master: ci.gitlab.org
+  [![CI](http://ci.gitlab.org/projects/1/status?ref=master)](http://ci.gitlab.org/projects/1?ref=master)
+
+* [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.png)](https://codeclimate.com/github/gitlabhq/gitlabhq)
+* [![Dependency Status](https://gemnasium.com/gitlabhq/gitlabhq.png)](https://gemnasium.com/gitlabhq/gitlabhq)
+
+### Application details
+
+* powered by Ruby on Rails
+* its completely free and open source
 * distributed under the MIT License
-* works with gitolite
 
-## Requirements
+### Requirements
 
 * Ubuntu/Debian
 * ruby 1.9.3+
 * MySQL
 * git
-* gitolite
+* gitlab-shell
 * redis
 
-## Install
+More details are in the [requirements doc](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md)
 
-Checkout wiki pages for installation information, migration, etc.
+### Install
 
-## Community
+Checkout [wiki](https://github.com/gitlabhq/gitlabhq/wiki) pages for installation information, migration, etc.
 
-[Google Group](https://groups.google.com/group/gitlabhq)
+### [Community](http://gitlab.org/community/)
 
-## Contacts
+### [Contact](http://gitlab.org/contact/)
 
-Twitter:
+### [Contributing Guide](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md)
 
- * @gitlabhq
- * @dzaporozhets 
-
-Email
-
- * m@gitlabhq.com
-
-## Contribute
-
-[Developer Guide](https://github.com/gitlabhq/gitlabhq/wiki/Developer-Guide)
-Want to help - send a pull request.
-We'll accept good pull requests.
+### [Developer Guide](https://github.com/gitlabhq/gitlabhq/wiki/Developer-Guide)

@@ -20,15 +20,37 @@ class ActivityObserver < ActiveRecord::Observer
     end
   end
 
-  def after_save(record)
-    if record.changed.include?("closed") && record.author_id_of_changes
-      Event.create(
-        project: record.project,
-        target_id: record.id,
-        target_type: record.class.name,
-        action: (record.closed ? Event::CLOSED : Event::REOPENED),
-        author_id: record.author_id_of_changes
-      )
-    end
+  def after_close(record, transition)
+    Event.create(
+      project: record.project,
+      target_id: record.id,
+      target_type: record.class.name,
+      action: Event::CLOSED,
+      author_id: record.author_id_of_changes
+    )
+  end
+
+  def after_reopen(record, transition)
+    Event.create(
+      project: record.project,
+      target_id: record.id,
+      target_type: record.class.name,
+      action: Event::REOPENED,
+      author_id: record.author_id_of_changes
+    )
+  end
+
+  def after_merge(record, transition)
+    # Since MR can be merged via sidekiq
+    # to prevent event duplication do this check
+    return true if record.merge_event
+
+    Event.create(
+      project: record.project,
+      target_id: record.id,
+      target_type: record.class.name,
+      action: Event::MERGED,
+      author_id: record.author_id_of_changes
+    )
   end
 end

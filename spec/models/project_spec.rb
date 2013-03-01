@@ -60,6 +60,7 @@ describe Project do
     it { should ensure_inclusion_of(:wall_enabled).in_array([true, false]) }
     it { should ensure_inclusion_of(:merge_requests_enabled).in_array([true, false]) }
     it { should ensure_inclusion_of(:wiki_enabled).in_array([true, false]) }
+    it { should ensure_length_of(:issues_tracker_id).is_within(0..255) }
 
     it "should not allow new projects beyond user limits" do
       project.stub(:creator).and_return(double(can_create_project?: false, projects_limit: 1))
@@ -72,11 +73,8 @@ describe Project do
     it { should respond_to(:url_to_repo) }
     it { should respond_to(:repo_exists?) }
     it { should respond_to(:satellite) }
-    it { should respond_to(:observe_push) }
     it { should respond_to(:update_merge_requests) }
     it { should respond_to(:execute_hooks) }
-    it { should respond_to(:post_receive_data) }
-    it { should respond_to(:trigger_post_receive) }
     it { should respond_to(:transfer) }
     it { should respond_to(:name_with_namespace) }
     it { should respond_to(:namespace_owner) }
@@ -121,10 +119,7 @@ describe Project do
     let(:project) { create(:project) }
 
     before do
-      @merge_request = create(:merge_request,
-                              project: project,
-                              merged: false,
-                              closed: false)
+      @merge_request = create(:merge_request, project: project)
       @key = create(:key, user_id: project.owner.id)
     end
 
@@ -133,8 +128,7 @@ describe Project do
       @merge_request.last_commit.id.should == "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
       project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a", "refs/heads/stable", @key.user)
       @merge_request.reload
-      @merge_request.merged.should be_true
-      @merge_request.closed.should be_true
+      @merge_request.merged?.should be_true
     end
 
     it "should update merge request commits with new one if pushed to source branch" do
@@ -195,6 +189,59 @@ describe Project do
 
     it "should return nil" do
       Project.new(path: "empty").repository.should be_nil
+    end
+  end
+
+  describe :issue_exists? do
+    let(:project) { create(:project) }
+    let(:existed_issue) { create(:issue, project: project) }
+    let(:not_existed_issue) { create(:issue) }
+    let(:ext_project) { create(:redmine_project) }
+
+    it "should be true or if used internal tracker and issue exists" do
+      project.issue_exists?(existed_issue.id).should be_true
+    end
+
+    it "should be false or if used internal tracker and issue not exists" do
+      project.issue_exists?(not_existed_issue.id).should be_false
+    end
+
+    it "should always be true if used other tracker" do
+      ext_project.issue_exists?(rand(100)).should be_true
+    end
+  end
+
+  describe :used_default_issues_tracker? do
+    let(:project) { create(:project) }
+    let(:ext_project) { create(:redmine_project) }
+
+    it "should be true if used internal tracker" do
+      project.used_default_issues_tracker?.should be_true
+    end
+
+    it "should be false if used other tracker" do
+      ext_project.used_default_issues_tracker?.should be_false
+    end
+  end
+
+  describe :can_have_issues_tracker_id? do
+    let(:project) { create(:project) }
+    let(:ext_project) { create(:redmine_project) }
+
+    it "should be true for projects with external issues tracker if issues enabled" do
+      ext_project.can_have_issues_tracker_id?.should be_true
+    end 
+
+    it "should be false for projects with internal issue tracker if issues enabled" do
+      project.can_have_issues_tracker_id?.should be_false
+    end
+
+    it "should be always false if issues disbled" do
+      project.issues_enabled = false
+      ext_project.issues_enabled = false
+
+      project.can_have_issues_tracker_id?.should be_false
+      ext_project.can_have_issues_tracker_id?.should be_false
     end
   end
 end
