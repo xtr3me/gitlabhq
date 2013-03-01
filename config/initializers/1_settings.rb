@@ -56,6 +56,8 @@ Settings.gitlab['relative_url_root'] ||= ''
 Settings.gitlab['protocol']   ||= Settings.gitlab.https ? "https" : "http"
 Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['support_email']  ||= Settings.gitlab.email_from
+Settings.gitlab['send_grant_emails']  ||= true if Settings.gitlab['send_grant_emails'].nil?
+Settings.gitlab['disable_grant_events'] ||= false if Settings.gitlab['disable_grant_events'].nil?
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
 Settings.gitlab['signup_enabled'] ||= false
@@ -82,6 +84,7 @@ Settings.gitlab_shell['ssh_port']     ||= 22
 Settings.gitlab_shell['ssh_user']     ||= Settings.gitlab.user
 Settings.gitlab_shell['owner_group']  ||= Settings.gitlab.user
 Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_ssh_path_prefix)
+Settings.gitlab_shell['directory']    ||= "~#{Settings.gitlab.user}"
 
 #
 # Backup
