@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130218141554) do
+ActiveRecord::Schema.define(:version => 20130220133245) do
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -68,19 +68,19 @@ ActiveRecord::Schema.define(:version => 20130218141554) do
   add_index "keys", ["user_id"], :name => "index_keys_on_user_id"
 
   create_table "merge_requests", :force => true do |t|
-    t.string   "target_branch",                                      :null => false
-    t.string   "source_branch",                                      :null => false
-    t.integer  "project_id",                                         :null => false
+    t.string   "target_branch",                       :null => false
+    t.string   "source_branch",                       :null => false
+    t.integer  "project_id",                          :null => false
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
-    t.datetime "created_at",                                         :null => false
-    t.datetime "updated_at",                                         :null => false
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
     t.text     "st_commits",    :limit => 2147483647
     t.text     "st_diffs",      :limit => 2147483647
-    t.integer  "merge_status",                        :default => 1, :null => false
     t.integer  "milestone_id"
     t.string   "state"
+    t.string   "merge_status"
   end
 
   add_index "merge_requests", ["assignee_id"], :name => "index_merge_requests_on_assignee_id"
@@ -142,16 +142,18 @@ ActiveRecord::Schema.define(:version => 20130218141554) do
     t.string   "name"
     t.string   "path"
     t.text     "description"
-    t.datetime "created_at",                                :null => false
-    t.datetime "updated_at",                                :null => false
+    t.datetime "created_at",                                   :null => false
+    t.datetime "updated_at",                                   :null => false
     t.integer  "creator_id"
     t.string   "default_branch"
-    t.boolean  "issues_enabled",         :default => true,  :null => false
-    t.boolean  "wall_enabled",           :default => true,  :null => false
-    t.boolean  "merge_requests_enabled", :default => true,  :null => false
-    t.boolean  "wiki_enabled",           :default => true,  :null => false
+    t.boolean  "issues_enabled",         :default => true,     :null => false
+    t.boolean  "wall_enabled",           :default => true,     :null => false
+    t.boolean  "merge_requests_enabled", :default => true,     :null => false
+    t.boolean  "wiki_enabled",           :default => true,     :null => false
     t.integer  "namespace_id"
-    t.boolean  "public",                 :default => false, :null => false
+    t.boolean  "public",                 :default => false,    :null => false
+    t.string   "issues_tracker",         :default => "gitlab", :null => false
+    t.string   "issues_tracker_id"
   end
 
   add_index "projects", ["creator_id"], :name => "index_projects_on_owner_id"
@@ -265,6 +267,7 @@ ActiveRecord::Schema.define(:version => 20130218141554) do
     t.string   "username"
     t.boolean  "can_create_group",       :default => true,  :null => false
     t.boolean  "can_create_team",        :default => true,  :null => false
+    t.string   "ssh_username"
   end
 
   add_index "users", ["admin"], :name => "index_users_on_admin"
