@@ -17,7 +17,7 @@ module Gitlab
         git_cmd = params[:action]
 
 	if key.nil?
-	  user = User.where(ssh_username: params[:key_id].gsub(/user\-/, "")).first
+	  user = User.where(ssh_username: params[:key_id].gsub(/ssh\-/, "")).first
 	end
 
         if !key.nil? && key.is_deploy_key
@@ -46,7 +46,7 @@ module Gitlab
       get "/discover" do
         key = Key.find(params[:key_id]) rescue nil
 	if key.nil?
-	  user = User.where(ssh_username: params[:key_id]).first
+	  user = User.where(ssh_username: params[:key_id].gsub(/ssh\-/, "")).first
 	  present user, with: Entities::User
 	else
 	  present key.user, with: Entities::User

@@ -45,10 +45,10 @@ class GitPushService
 
   def create_push_event
     Event.create(
-      project: project,
+      project: @project,
       action: Event::PUSHED,
-      data: push_data,
-      author_id: push_data[:user_id]
+      data: @push_data,
+      author_id: @push_data[:user_id]
     )
   end
 
