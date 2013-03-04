@@ -143,7 +143,7 @@ class MergeRequestsController < ProjectResourceController
     # Get commits from repository
     # or from cache if already merged
     @commits = @merge_request.commits
-    @commits = CommitDecorator.decorate(@commits)
+    @commits = CommitDecorator.decorate_collection(@commits)
 
     @allowed_to_merge = allowed_to_merge?
     @show_merge_controls = @merge_request.opened? && @commits.any? && @allowed_to_merge
