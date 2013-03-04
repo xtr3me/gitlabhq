@@ -29,7 +29,7 @@ module Projects
         end
       else
         # Set current user namespace if namespace_id is nil
-        @project.namespace_id = current_user.namespace_id
+        @project.namespace_id = current_user.namespace_id unless Settings.gitlab.global_namespace_as_default
       end
 
       @project.creator = current_user

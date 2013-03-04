@@ -58,6 +58,7 @@ Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['support_email']  ||= Settings.gitlab.email_from
 Settings.gitlab['send_grant_emails']  ||= true if Settings.gitlab['send_grant_emails'].nil?
 Settings.gitlab['disable_grant_events'] ||= false if Settings.gitlab['disable_grant_events'].nil?
+Settings.gitlab['global_namespace_as_default'] ||= false if Settings.gitlab['global_namespace_as_default'].nil?
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
 Settings.gitlab['signup_enabled'] ||= false
