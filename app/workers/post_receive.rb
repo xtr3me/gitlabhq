@@ -4,7 +4,6 @@ class PostReceive
   sidekiq_options queue: :post_receive
 
   def perform(repo_path, oldrev, newrev, ref, identifier)
-
     if repo_path.start_with?(Gitlab.config.gitlab_shell.repos_path.to_s)
       repo_path.gsub!(Gitlab.config.gitlab_shell.repos_path.to_s, "")
     else
@@ -35,6 +34,11 @@ class PostReceive
              # git push over ssh
              key_id = identifier.gsub("key-", "")
              Key.find_by_id(key_id).try(:user)
+	  
+           elsif identifier =~ /\Assh-[\w|-]+\Z/
+             # git push over ssh
+             user_id = identifier.gsub("ssh-", "")
+             User.find_by_ssh_username(user_id)
            end
 
     unless user
