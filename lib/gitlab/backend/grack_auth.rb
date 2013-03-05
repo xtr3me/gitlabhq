@@ -31,8 +31,9 @@ module Grack
       if @auth.provided?
         # Authentication with username and password
         login, password = @auth.credentials
-        self.user = User.find_by_email(login) || User.find_by_username(login)
-        return false unless user.try(:valid_password?, password)
+        ldap_uid = authenticate_user_and_get_dn_from_ldap(login, password)
+        self.user = User.find_by_email(login) || User.find_by_username(login) || User.where(extern_uid: ldap_uid, provider: 'ldap').try(:first)
+        return false unless user && (ldap_uid || user.try(:valid_password?, password))
 
         Gitlab::ShellEnv.set_env(user)
       end
@@ -106,6 +107,29 @@ module Grack
                        abilities << Ability
                        abilities
                      end
+    end
+
+    def authenticate_user_and_get_dn_from_ldap(login, password)
+      gl = Gitlab.config
+      return nil unless gl.ldap.enabled
+ 
+      ldap = Net::LDAP.new(
+          host: gl.ldap['host'],
+          port: gl.ldap['port'],
+          auth: {
+              method: :simple,
+              username: gl.ldap['bind_dn'],
+              password: gl.ldap['password']
+          }
+      )
+ 
+      result = ldap.bind_as(
+          :base => gl.ldap['base'],
+          :filter => Net::LDAP::Filter.eq(gl.ldap['uid'], login),
+          :password => password
+      )
+      dn = result.try(:first).try(:dn) if result
+      return dn
     end
   end# Auth
 end# Grack
