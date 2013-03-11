@@ -24,6 +24,9 @@ module Gitlab
           project == key.project && git_cmd == 'git-upload-pack'
         else
           user = key.user if user.nil?
+
+          return false if user.blocked?
+
           action = case git_cmd
                    when 'git-upload-pack'
                      then :download_code
