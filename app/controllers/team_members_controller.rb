@@ -11,17 +11,12 @@ class TeamMembersController < ProjectResourceController
     @assigned_teams = @project.user_team_project_relationships
   end
 
-  def show
-    @user_project_relation = project.users_projects.find_by_user_id(member)
-    @events = member.recent_events.in_projects(project).limit(7)
-  end
-
   def new
     @user_project_relation = project.users_projects.new
   end
 
   def create
-    users = User.where(id: params[:user_ids])
+    users = User.where(id: params[:user_ids].split(','))
 
     @project.team << [users, params[:project_access]]
 

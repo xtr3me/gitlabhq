@@ -110,7 +110,7 @@ module ApplicationHelper
       ]
     end
 
-    [groups, projects, default_nav, project_nav, help_nav].flatten.to_json
+    [groups, teams, projects, default_nav, project_nav, help_nav].flatten.to_json
   end
 
   def emoji_autocomplete_source
@@ -169,4 +169,10 @@ module ApplicationHelper
   end
 
   alias_method :url_to_image, :image_url
+
+  def users_select_tag(id, opts = {})
+    css_class = "ajax-users-select"
+    css_class << " multiselect" if opts[:multiple]
+    hidden_field_tag(id, '', class: css_class)
+  end
 end
