@@ -30,7 +30,7 @@
 
 * GitLab.org community site: [Homepage](http://gitlab.org) [Screenshots](http://gitlab.org/screenshots/) [Blog](http://blog.gitlab.org/) [Demo](http://demo.gitlabhq.com/users/sign_in)
 
-* GitLab.com: [Homepage](http://blog.gitlab.com/) [Hosted pricing](http://blog.gitlab.com/pricing/) [Services](http://blog.gitlab.com/services/) [Blog](http://blog.gitlab.com/blog/)
+* GitLab.com commercial services: [Homepage](http://blog.gitlab.com/) [GitLab Cloud](http://blog.gitlab.com/cloud/) [Subscription](http://blog.gitlab.com/subscription/) [Consultancy](http://blog.gitlab.com/consultancy/) [Blog](http://blog.gitlab.com/blog/)
 
 * GitLab CI: [Readme](https://github.com/gitlabhq/gitlab-ci/blob/master/README.md) of the GitLab open-source continuous integration server
 
@@ -51,9 +51,9 @@
 
 Follow the installation guide for production server.
 
-* [Installation guide for latest stable release (4.2)](https://github.com/gitlabhq/gitlabhq/blob/4-2-stable/doc/install/installation.md) - **Recommended**
+* [Installation guide for latest stable release (5.0)](https://github.com/gitlabhq/gitlabhq/blob/5-0-stable/doc/install/installation.md) - **Recommended**
 
-* [Installation guide for the current master branch (5.0)](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md)
+* [Installation guide for the current master branch (5.1)](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md)
 
 
 #### For development
@@ -108,9 +108,9 @@ If you want to contribute, please first read our [Contributing Guidelines](https
 
 * [Feedback and suggestions forum](http://gitlab.uservoice.com/forums/176466-general)
 
-* [Paid support](http://blog.gitlab.com/support/)
+* [Support subscription](http://blog.gitlab.com/subscription/)
 
-* [Paid services](http://blog.gitlab.com/services/)
+* [Consultancy](http://blog.gitlab.com/consultancy/)
 
 ### New versions and the API
 

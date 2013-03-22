@@ -10,6 +10,7 @@ module Gitlab
       #  GET /users
       get do
         @users = User.scoped
+        @users = @users.active if params[:active].present?
         @users = @users.search(params[:search]) if params[:search].present?
         present @users, with: Entities::User
       end
@@ -62,7 +63,7 @@ module Gitlab
       #   skype                             - Skype ID
       #   linkedin                          - Linkedin
       #   twitter                           - Twitter account
-      #   projects_limit                    - Limit projects wich user can create
+      #   projects_limit                    - Limit projects each user can create
       #   extern_uid                        - External authentication provider UID
       #   provider                          - External provider
       #   bio                               - Bio
@@ -124,7 +125,7 @@ module Gitlab
       # Example Request:
       #   GET /user
       get do
-        present @current_user, with: Entities::User
+        present @current_user, with: Entities::UserLogin
       end
 
       # Get currently authenticated user's keys

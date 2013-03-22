@@ -22,10 +22,8 @@
 #  linkedin               :string(255)      default(""), not null
 #  twitter                :string(255)      default(""), not null
 #  authentication_token   :string(255)
-#  dark_scheme            :boolean          default(FALSE), not null
 #  theme_id               :integer          default(1), not null
 #  bio                    :string(255)
-#  state                  :string(255)
 #  failed_attempts        :integer          default(0)
 #  locked_at              :datetime
 #  extern_uid             :string(255)
@@ -34,6 +32,8 @@
 #  ssh_username		  :string(255)
 #  can_create_group       :boolean          default(TRUE), not null
 #  can_create_team        :boolean          default(TRUE), not null
+#  state                  :string(255)
+#  color_scheme_id        :integer          default(1), not null
 #
 
 class User < ActiveRecord::Base
@@ -41,7 +41,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :registerable
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username, :ssh_username,
-                  :skype, :linkedin, :twitter, :dark_scheme, :theme_id, :force_random_password,
+                  :skype, :linkedin, :twitter, :color_scheme_id, :theme_id, :force_random_password,
                   :extern_uid, :provider, as: [:default, :admin]
   attr_accessible :projects_limit, :can_create_team, :can_create_group, as: :admin
 

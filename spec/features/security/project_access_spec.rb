@@ -95,7 +95,7 @@ describe "Application access" do
     end
 
     describe "GET /project_code/wall" do
-      subject { wall_project_path(project) }
+      subject { project_wall_path(project) }
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
@@ -220,17 +220,6 @@ describe "Application access" do
 
     describe "GET /project_code/hooks" do
       subject { project_hooks_path(project) }
-
-      it { should be_allowed_for master }
-      it { should be_allowed_for reporter }
-      it { should be_denied_for :admin }
-      it { should be_denied_for guest }
-      it { should be_denied_for :user }
-      it { should be_denied_for :visitor }
-    end
-
-    describe "GET /project_code/files" do
-      subject { files_project_path(project) }
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }

@@ -173,17 +173,6 @@ ul.breadcrumb {
     font-weight: bold;
     font-size: 14px;
   }
-
-  .arrow {
-    background: url("images.png") no-repeat -85px -77px;
-    width: 19px;
-    height: 16px;
-    float: left;
-    position: relative;
-    left: -10px;
-    padding: 0;
-    margin: 0;
-  }
 }
 
 input[type=text] {
@@ -555,3 +544,14 @@ img.emoji {
   display: none;
 }
 
+.label-branch {
+  @include border-radius(4px);
+  padding: 2px 4px;
+  border: none;
+  font-size: 14px;
+  background: #474D57;
+  color: #fff;
+  font-family: $monospace_font;
+  text-shadow: 0 1px 1px #111;
+  font-weight: normal;
+}

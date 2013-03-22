@@ -105,7 +105,7 @@ module ApplicationHelper
         { label: "#{simple_sanitize(@project.name_with_namespace)} - Snippets", url: project_snippets_path(@project) },
         { label: "#{simple_sanitize(@project.name_with_namespace)} - Team",     url: project_team_index_path(@project) },
         { label: "#{simple_sanitize(@project.name_with_namespace)} - Tree",     url: project_tree_path(@project, @ref || @project.repository.root_ref) },
-        { label: "#{simple_sanitize(@project.name_with_namespace)} - Wall",     url: wall_project_path(@project) },
+        { label: "#{simple_sanitize(@project.name_with_namespace)} - Wall",     url: project_wall_path(@project) },
         { label: "#{simple_sanitize(@project.name_with_namespace)} - Wiki",     url: project_wikis_path(@project) },
       ]
     end
@@ -128,7 +128,13 @@ module ApplicationHelper
   end
 
   def user_color_scheme_class
-    current_user.dark_scheme ? :black : :white
+    case current_user.color_scheme_id
+    when 1 then 'white'
+    when 2 then 'black'
+    when 3 then 'solarized-dark'
+    else
+      'white'
+    end
   end
 
   def show_last_push_widget?(event)

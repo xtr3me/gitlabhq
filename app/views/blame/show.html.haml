@@ -3,7 +3,7 @@
 #tree-holder.tree-holder
   %ul.breadcrumb
     %li
-      %span.arrow
+      %i.icon-angle-right
       = link_to project_tree_path(@project, @ref) do
         = @project.name
     - @tree.breadcrumbs(6) do |link|
@@ -38,9 +38,11 @@
                   - current_line += 1
                 - else
                   - lines.each do |line|
-                    = current_line
+                    :preserve
+                      #{current_line}
                     - current_line += 1
             %td.lines
               %pre
                 - lines.each do |line|
-                  = line
+                  :preserve
+                    #{line}

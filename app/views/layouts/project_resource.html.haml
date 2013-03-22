@@ -9,7 +9,7 @@
 
     .container
       %ul.main_menu
-        = nav_link(html_options: {class: "home #{project_tab_class}"}) do
+        = nav_link(path: 'projects#show', html_options: {class: "home"}) do
           = link_to project_path(@project), title: "Project" do
             %i.icon-home
 
@@ -22,7 +22,7 @@
             = nav_link(controller: %w(graph)) do
               = link_to "Network", project_graph_path(@project, @ref || @repository.root_ref)
 
-        - if @project.issues_enabled 
+        - if @project.issues_enabled
           = nav_link(controller: %w(issues milestones labels)) do
             = link_to url_for_project_issues do
               Issues
@@ -35,12 +35,21 @@
               Merge Requests
               %span.count.merge_counter= @project.merge_requests.opened.count
 
-        - if @project.wall_enabled
-          = nav_link(path: 'projects#wall') do
-            = link_to 'Wall', wall_project_path(@project)
-
         - if @project.wiki_enabled
           = nav_link(controller: :wikis) do
-            = link_to 'Wiki', project_wiki_path(@project, :index)
+            = link_to 'Wiki', project_wiki_path(@project, :home)
+
+        - if @project.wall_enabled
+          = nav_link(controller: :walls) do
+            = link_to 'Wall', project_wall_path(@project)
+
+        - if @project.snippets_enabled
+          = nav_link(controller: :snippets) do
+            = link_to 'Snippets', project_snippets_path(@project)
+
+        - if can? current_user, :admin_project, @project
+          = nav_link(html_options: {class: "#{project_tab_class}"}) do
+            = link_to edit_project_path(@project), class: "stat-tab tab " do
+              Settings
 
       .content= yield
