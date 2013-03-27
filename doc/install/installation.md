@@ -1,6 +1,6 @@
 This installation guide was created for Debian/Ubuntu and tested on it. Please read [`doc/install/requirements.md`](./requirements.md) for hardware and platform requirements.
 
-This installation guide is recommended to set up a production server. If you want a development environment please use the [Vargrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) since it makes it much easier to set up all the dependencies for integration testing.
+This installation guide is recommended to set up a production server. If you want a development environment please use the [Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) since it makes it much easier to set up all the dependencies for integration testing.
 
 **Important Note:**
 The following steps have been known to work.
@@ -74,8 +74,8 @@ Make sure you have the right version of Python installed.
 Download and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --progress http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p327.tar.gz | tar xz
-    cd ruby-1.9.3-p327
+    curl --progress http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p392.tar.gz | tar xz
+    cd ruby-1.9.3-p392
     ./configure
     make
     sudo make install

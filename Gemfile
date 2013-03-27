@@ -23,7 +23,7 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 gem "gitlab-grit", '~> 1.0.0', require: 'grit'
-gem 'grit_ext', '~> 0.6.2'
+gem 'grit_ext', '~> 0.8.1'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 1.0.0', require: 'grack'
@@ -104,7 +104,7 @@ gem 'settingslogic'
 # github-linquist needs pygments 0.4.2 but Gollum 2.4.11
 # requires pygments 0.3.2. The latest master Gollum has been updated
 # to use pygments 0.4.2. Change this after next Gollum release.
-gem "gollum", "~> 2.4.0", git: "git://github.com/gollum/gollum.git", ref: "5dcd3c8c8f"
+gem "gollum", "~> 2.4.0", git: "https://github.com/gollum/gollum.git", ref: "5dcd3c8c8f"
 
 # Misc
 gem "foreman"
@@ -173,6 +173,8 @@ group :development, :test do
 
   # PhantomJS driver for Capybara
   gem 'poltergeist', '1.1.0'
+
+  gem 'spork', '~> 1.0rc'
 end
 
 group :test do
