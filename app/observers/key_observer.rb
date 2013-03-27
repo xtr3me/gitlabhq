@@ -1,12 +1,12 @@
-class KeyObserver < ActiveRecord::Observer
-  include Gitolited
-
+class KeyObserver < BaseObserver
   def after_save(key)
     GitlabShellWorker.perform_async(
       :add_key,
       key.shell_id,
       key.key
     )
+
+    notification.new_key(key)
   end
 
   def after_destroy(key)

@@ -89,7 +89,14 @@ class Commit
       if first && last
         result[:same] = (first.id == last.id)
         result[:commits] = project.repo.commits_between(last.id, first.id).map {|c| Commit.new(c)}
-        result[:diffs] = project.repo.diff(last.id, first.id) rescue []
+
+        # Dont load diff for 100+ commits
+        result[:diffs] = if result[:commits].size > 100
+                           []
+                         else
+                           project.repo.diff(last.id, first.id) rescue []
+                         end
+
         result[:commit] = Commit.new(first)
       end
 
@@ -164,5 +171,11 @@ class Commit
     lines.pop if lines.last =~ /^[\d.]+$/ # Git version
     lines.pop if lines.last == "-- "      # end of diff
     lines.join("\n")
+  end
+
+  def has_zero_stats?
+    stats.total.zero?
+  rescue
+    true
   end
 end

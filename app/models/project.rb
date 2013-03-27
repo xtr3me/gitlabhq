@@ -11,24 +11,23 @@
 #  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
-#  issues_tracker         :string           not null
 #  wall_enabled           :boolean          default(TRUE), not null
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
 #  namespace_id           :integer
 #  public                 :boolean          default(FALSE), not null
+#  issues_tracker         :string(255)      default("gitlab"), not null
+#  issues_tracker_id      :string(255)
 #
 
 require "grit"
 
 class Project < ActiveRecord::Base
-  include Gitolited
+  include Gitlab::ShellAdapter
   extend Enumerize
 
-  class TransferError < StandardError; end
-
   attr_accessible :name, :path, :description, :default_branch, :issues_tracker,
-    :issues_enabled, :wall_enabled, :merge_requests_enabled, :issues_tracker_id,
+    :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
     :wiki_enabled, :public, :import_url, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin

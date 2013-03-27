@@ -196,36 +196,5 @@ describe "Gitlab Flavored Markdown" do
 
       page.should have_link("##{issue.id}")
     end
-
-    it "should render in projects#wall", js: true do
-      visit wall_project_path(project)
-      within ".new_note.js-main-target-form" do
-        fill_in "note_note", with: "see ##{issue.id}"
-        click_button "Add Comment"
-      end
-
-      page.should have_link("##{issue.id}")
-    end
-  end
-
-
-  describe "for wikis" do
-    before do
-      visit project_wiki_path(project, :index)
-      fill_in "Title", with: "Circumvent ##{issue.id}"
-      fill_in "Content", with: "# Other pages\n\n* [Foo](foo)\n* [Bar](bar)\n\nAlso look at ##{issue.id} :-)"
-      click_on "Save"
-    end
-
-    it "should NOT render title in wikis#show" do
-      within(".content h3") do # page title
-        page.should have_content("Circumvent ##{issue.id}")
-        page.should_not have_link("##{issue.id}")
-      end
-    end
-
-    it "should render content in wikis#show" do
-      page.should have_link("##{issue.id}")
-    end
   end
 end

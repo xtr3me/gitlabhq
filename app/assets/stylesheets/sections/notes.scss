@@ -192,7 +192,7 @@ ul.notes {
     }
   }
 
-  // "show" the icon also if we just hover somwhere over the line
+  // "show" the icon also if we just hover somewhere over the line
   &:hover > td {
     background: $hover !important;
 
@@ -284,6 +284,9 @@ ul.notes {
     margin-top: 8px;
     margin-left: 15px;
     @extend .pull-left;
-    @extend .span4;
+  }
+
+  .js-notify-commit-author {
+    float: left;
   }
 }

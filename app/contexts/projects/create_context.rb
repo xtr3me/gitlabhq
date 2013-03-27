@@ -32,6 +32,10 @@ module Projects
         @project.namespace_id = current_user.namespace_id unless Settings.gitlab.global_namespace_as_default
       end
 
+      # Disable less important features by default
+      @project.wall_enabled = false
+      @project.snippets_enabled = false
+
       @project.creator = current_user
 
       # Import project from cloneable resource
