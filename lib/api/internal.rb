@@ -19,7 +19,7 @@ module Gitlab
         project_path = params[:project]
         project_path.gsub!(/\.wiki/,'') if project_path =~ /\.wiki/
 
-        key = Key.find(params[:key_id])
+        key = Key.find(params[:key_id]) rescue nil
         project = Project.find_with_namespace(project_path)
         git_cmd = params[:action]
 
